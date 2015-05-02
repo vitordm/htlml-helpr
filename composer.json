@@ -10,9 +10,15 @@
       "email": "oliveira.vitor3@gmail.com"
     }
   ],
-  "autoload" :{
-    "psr-4" :{
-      "Html\\" : "src/"
+  "autoload": {
+    "psr-4": {
+      "Html\\": "src/"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/vitordm/htlml-helpr"
+    }
+  ]
 }
