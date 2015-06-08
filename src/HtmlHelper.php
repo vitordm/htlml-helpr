@@ -9,33 +9,33 @@ namespace Html;
  */
 class HtmlHelper
 {
-    protected $BASE_PATH;
+    protected $BASE_SITE;
     
     /**
      * Constroi a classe
-     * @var string $base_path pre configura o base path
+     * @var string $site URL do site
      */ 
-    public function __construct($base_path = NULL)
+    public function __construct($site = NULL)
     {
-        $this->setBasePath($base_path);
+        $this->setBaseSite($site);
     }
     
     /**
      * Retorna o base path
      * @return string
      */
-    public function getBasePath()
+    public function getBaseSite()
     {
-        return $this->BASE_PATH;
+        return $this->BASE_SITE;
     }
     
     /**
      * Configura o base path
-     * @var string $base_path
+     * @var string $site
      */ 
-    public function setBasePath($base_path)
+    public function setBaseSite($site)
     {
-        $this->BASE_PATH = $base_path;
+        $this->BASE_SITE = $site;
     }
     
     public function doctype()
@@ -192,7 +192,7 @@ class HtmlHelper
         foreach ($fileName as $file)
         {
             $data .= '<script src="';
-            $data .= ($base_path) ? $this->BASE_PATH : '';
+            $data .= ($base_path) ? $this->getBaseSite() : '';
             $data .= $file . '"></script>' . PHP_EOL;
         }
         return $data;
@@ -215,40 +215,56 @@ class HtmlHelper
         
         return $data;
     }
-    
-    public function a($path, $text = NULL, $base_path = true, array $attrs = array())
+
+	/**
+	 * @param       $path
+	 * @param null  $text
+	 * @param bool  $base_path
+	 * @param array $attrs
+	 *
+	 * @return string
+	 */
+	public function a($path, $text = NULL, $base_path = true, array $attrs = array())
     {
         if($base_path)
-            $path = $this->BASE_PATH . $path;
+            $path = trim($this->getBaseSite(), '/') . '/' . ltrim($path, '/');
         $attrs['href'] = $path;
             
         return $this->tag('a', $text, false, false, $attrs);
     }
 
-    /**
-     * @param $data
-     * @return mixed
-     */
-    public static function shortenUrls($data)
+	/**
+	 * @param string $url
+	 *
+	 * @return string
+	 * @throws \HtmlException
+	 */
+    public function shortenUrl($url)
     {
-        $data = preg_replace_callback('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)@', array(get_class(self), 'fetchTinyUrl'), $data);
-        return $data;
+
+	    $data = $this->fetchTinyUrl($url);
+	    if ($data)
+	        return $this->a($data, $data, false, array('target' => '_blank'));
+
+	    throw new \HtmlException("Wrong get a tinyUrl" . print_r($data));
     }
 
-    /**
-     * @param $url
-     * @return string
-     */
-    public static function fetchTinyUrl($url)
+	/**
+	 * @param $url
+	 *
+	 * @return mixed
+	 */
+    public function fetchTinyUrl($url)
     {
         $ch = curl_init();
         $timeout = 5;
-        curl_setopt($ch, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $url[0]);
+        curl_setopt($ch, CURLOPT_URL, 'http://tinyurl.com/api-create.php?url=' . $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         $data = curl_exec($ch);
         curl_close($ch);
-        return '<a href="' . $data . '" target = "_blank" >' . $data . '</a>';
+
+	    return $data;
     }
 
     /**
@@ -260,7 +276,7 @@ class HtmlHelper
     {
         $url = null;
         if($base_path)
-            $url .= trim($this->BASE_PATH, '/') . '/';
+            $url .= trim($this->getBaseSite(), '/') . '/';
         $url .= $path;
 
         return $url;

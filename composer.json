@@ -3,7 +3,7 @@
   "description": "Helper to create and manipulate HTML with PHP >= 5.3",
   "minimum-stability": "dev",
   "license": "proprietary",
-  "version": "0.1",
+  "version": "0.2",
   "authors": [
     {
       "name": "Vítor G. I. Oliveira",
