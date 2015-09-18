@@ -17,6 +17,21 @@ class HtmlHelper
     public static $CSS_LINK;
     /** @var string */
     public static $JS_LINK;
+
+
+    /**
+     * get the instace of this class
+     * @return HtmlHelper
+     */
+    public static function &getInstance()
+    {
+        static $instance;
+
+        if (!is_object($instance)) {
+            $instance = new self();
+        }
+        return $instance;
+    }
     
     /**
      * Retorna o base path
@@ -313,5 +328,149 @@ class HtmlHelper
 
         return $url;
     }
+
+    /**
+     * @param array $head
+     * @param array $body
+     * @param array $footer
+     * @param array $attrs
+     *
+     * @return null|string
+     * @throws \Html\HtmlException
+     */
+    public static function table($head, $body, $footer = array(), $attrs = array())
+    {
+
+        $table = null;
+
+        if (!is_array($head) or !is_array($body)) {
+            throw new HtmlException("Parâmetros não são arrays!");
+        }
+
+        //Creating head table
+        $tr_heads = null;
+
+        if (!isset($head[0])) {
+            $head = array($head);
+        }
+
+        foreach ($head as $h){
+
+            $tr_head_tag = 'tr';
+            $tr_head_attr = array();
+
+            if (isset($h['tr'])) {
+                if (isset($h['tr']['tag']))
+                    $tr_head_tag = $h['tr']['tag'];
+                if(isset($h['tr']['@attrs'])) {
+                    $tr_head_attr = $h['tr']['@attrs'];
+                }
+                unset($h['tr']);
+            }
+
+            $td_h = self::parseFetchTdTable($h, 'th');
+
+            $th_row = self::tag($tr_head_tag, $td_h, null, null, $tr_head_attr);
+            $tr_heads .= $th_row;
+        }
+
+        $table .= self::tag('thead',$tr_heads, null, null, array()) . PHP_EOL;
+
+
+        //Creating body table
+        if (!isset($body[0])) {
+            $body = array($body);
+        }
+
+        $tr_bodys = null;
+        foreach ($body as $b) {
+
+            $tr_body_tag = 'tr';
+            $tr_body_attr = array();
+
+            if (isset($b['tr'])) {
+                if (isset($b['tr']['tag']))
+                    $tr_body_tag = $b['tr']['tag'];
+                if(isset($b['tr']['@attrs'])) {
+                    $tr_body_attr = $b['tr']['@attrs'];
+                }
+                unset($b['tr']);
+            }
+
+            $td_b = self::parseFetchTdTable($b);
+            $tb_row = self::tag($tr_body_tag, $td_b, null, null, $tr_body_attr);
+            $tr_bodys .= $tb_row;
+        }
+
+        $table .= self::tag('tbody',$tr_bodys, null, null, array()). PHP_EOL;
+
+        //Creating footer of table
+        if (!empty($footer)) {
+
+            $tr_footer = null;
+            foreach ($footer as $f) {
+
+                $tr_footer_tag = 'tr';
+                $tr_footer_attr = array();
+
+                if (isset($f['tr'])) {
+                    if (isset($f['tr']['tag']))
+                        $tr_footer_tag = $f['tr']['tag'];
+                    if(isset($f['tr']['@attrs'])) {
+                        $tr_footer_attr = $f['tr']['@attrs'];
+                    }
+                    unset($b['tr']);
+                }
+
+                $td_f = self::parseFetchTdTable($b);
+                $tf_row = self::tag($tr_footer_tag, $td_f, null, null, $tr_footer_attr);
+                $tr_footer .= $tf_row;
+            }
+
+            $table .= self::tag('tfoot',$tr_footer, null, null, array());
+        }
+
+        if (!isset($attrs['class'])) {
+            $attrs['class'] = "table table-hover table-bordered table-condensed";
+        }
+
+        $table = self::tag("table", $table, null, null, $attrs);
+
+        return $table;
+
+    }
+
+    /**
+     * @param array  $fields
+     * @param string $tag
+     *
+     * @return null|string
+     */
+    private static function parseFetchTdTable($fields, $tag = 'td')
+    {
+
+
+        $td_fetch = null;
+        foreach ($fields as $h) {
+
+            $attrs = array();
+            $value = null;
+
+            if (is_array($h)) {
+                $attrs   = isset($h["@attrs"]) ? $h["@attrs"] : array();
+                $value   = isset($h['value']) ? $h['value'] : null;
+
+            }
+            else {
+                $value = $h;
+            }
+
+            $td_fetch .= self::tag($tag, $value, null, null, $attrs);
+        }
+
+        return $td_fetch;
+
+    }
+
 
 }

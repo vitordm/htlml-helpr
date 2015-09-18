@@ -1,8 +1,13 @@
+#composer
 composer.phar
 vendor/
-test/
+
+
+#ide
 .idea
 *.iml
 out
 gen
 
+#testes
+test/
