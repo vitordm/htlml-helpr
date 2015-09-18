@@ -3,42 +3,70 @@
 namespace Html;
 
 /**
- * Classe de auxilio no para HTML
- * @version 0.1
+ * Class HtmlHelper
+ * @version 1.0.0
+ * @package Html
  * @author Vitor Oliveira <oliveira.vitor3@gmail.com>
+ * @license
  */
 class HtmlHelper
 {
-    protected $BASE_SITE;
-    
-    /**
-     * Constroi a classe
-     * @var string $site URL do site
-     */ 
-    public function __construct($site = NULL)
-    {
-        $this->setBaseSite($site);
-    }
+    /** @var string */
+    public static $BASE_SITE;
+    /** @var string */
+    public static $CSS_LINK;
+    /** @var string */
+    public static $JS_LINK;
     
     /**
      * Retorna o base path
      * @return string
      */
-    public function getBaseSite()
+    public static function getBaseSite()
     {
-        return $this->BASE_SITE;
+        return rtrim(self::BASE_SITE, "/") . "/";
     }
     
     /**
      * Configura o base path
      * @var string $site
-     */ 
-    public function setBaseSite($site)
+     */
+    public static function setBaseSite($site)
     {
-        $this->BASE_SITE = $site;
+        self::$BASE_SITE = $site;
     }
-    
-    public function doctype()
+
+    /**
+     * @param string $link
+     */
+    public static function setCSSLink($link)
+    {
+        self::$CSS_LINK = $link;
+    }
+
+    /**
+     * @param $link
+     * @return string
+     */
+    public static function getCSSLink($link)
+    {
+        return rtrim(self::$CSS_LINK, "/") . "/";
+    }
+
+    public static function setJSLink($link)
+    {
+        self::$JS_LINK = $link;
+    }
+
+    public static function getJSLink()
+    {
+        return rtrim(self::$JS_LINK, "/") . "/";
+    }
+
+    /**
+     * @return string
+     */
+    public static function doctype()
     {
         return "<!DOCTYPE html>";
     }
@@ -54,7 +82,7 @@ class HtmlHelper
      * @param array $attrs Atributos da tag
      * @return string
      */
-    public function tag($type, $text = NULL,  $class = NULL, $id = NULL, $attrs = array())
+    public static function tag($type, $text = NULL,  $class = NULL, $id = NULL, $attrs = array())
     {
         /**
          * Monta os atributos primários
@@ -66,7 +94,7 @@ class HtmlHelper
         
         $tag = '<';
         $tag .= $type;
-        $tag .= ' ' . $this->parseAttrs($attrs);
+        $tag .= ' ' . self::parseAttrs($attrs);
         
         /**
          * Verifica se a tag é dupla ou unica
@@ -85,7 +113,7 @@ class HtmlHelper
      * @param array, [...]
      * @return string
      */
-    public function tags()
+    public static function tags()
     {
         $args = func_get_args();
         $ret = NULL;
@@ -102,7 +130,7 @@ class HtmlHelper
             
             unset($a['class'],$a['id'], $a['type'],$a['text']);
             
-            $ret .= $this->tag($type, $text, $class, $id, $a) . PHP_EOL;
+            $ret .= self::tag($type, $text, $class, $id, $a) . PHP_EOL;
             
         }
         
@@ -113,9 +141,9 @@ class HtmlHelper
      * Retorna a tag <br>
      * @return string
      */
-    public function br()
+    public static function br()
     {
-        return $this->tag('br');
+        return self::tag('br');
     }
     
     /**
@@ -124,18 +152,18 @@ class HtmlHelper
      * @param array $attrs
      * @return string
      */
-    public function span($text, $attrs = array())
+    public static function span($text, $attrs = array())
     {
-        return $this->tag('span',$text, null, null,$attrs);
+        return self::tag('span',$text, null, null,$attrs);
     }
     
     /**
      * Retorna a tag <hr>
      * @return string
      */
-    public function hr()
+    public static function hr()
     {
-        return $this->tag('hr');
+        return self::tag('hr');
     }
 
     /**
@@ -144,7 +172,7 @@ class HtmlHelper
      * @throws HtmlException
      * @return string
      */
-    protected function parseAttrs($attrs = array())
+    protected static function parseAttrs($attrs = array())
     {
         /**
          * Verifica se está passando um array correto
@@ -173,7 +201,7 @@ class HtmlHelper
      * @param string $string string a ser parseada
      * @return string
      */
-    protected function parseBreak($string)
+    protected static function parseBreak($string)
     {
         return PHP_EOL . $string . PHP_EOL;
     }
@@ -184,7 +212,7 @@ class HtmlHelper
      * @param bool $base_path
      * @return string
      */
-    public function js($fileName, $base_path = false)
+    public static function js($fileName, $base_path = true)
     {
         if (!is_array($fileName))
             $fileName = array($fileName);
@@ -192,7 +220,7 @@ class HtmlHelper
         foreach ($fileName as $file)
         {
             $data .= '<script src="';
-            $data .= ($base_path) ? $this->getBaseSite() : '';
+            $data .= ($base_path) ? self::getJSLink() : '';
             $data .= $file . '"></script>' . PHP_EOL;
         }
         return $data;
@@ -201,16 +229,20 @@ class HtmlHelper
     /**
      * Gera a tag de link
      * @param array|string $fileName
+     * @param bool $base_path
      * @return string
      */
-    public function css($fileName)
+    public static function css($fileName, $base_path = true)
     {
         if (!is_array($fileName))
             $fileName = array($fileName);
         $data = null;
         foreach ($fileName as $file)
         {
-            $data .= '<link rel="stylesheet" type="text/css" href="' . $file . '"/>' . PHP_EOL;
+            $url = "";
+            $url .= ($base_path) ? self::getCSSLink() : '';
+            $url .= $file;
+            $data .= '<link rel="stylesheet" type="text/css" href="' . $url . '"/>' . PHP_EOL;
         }
         
         return $data;
@@ -224,13 +256,13 @@ class HtmlHelper
 	 *
 	 * @return string
 	 */
-	public function a($path, $text = NULL, $base_path = true, array $attrs = array())
+	public static function a($path, $text = NULL, $base_path = true, array $attrs = array())
     {
         if($base_path)
-            $path = trim($this->getBaseSite(), '/') . '/' . ltrim($path, '/');
+            $path = self::getBaseSite() . ltrim($path, '/');
         $attrs['href'] = $path;
             
-        return $this->tag('a', $text, false, false, $attrs);
+        return self::tag('a', $text, false, false, $attrs);
     }
 
 	/**
@@ -239,12 +271,12 @@ class HtmlHelper
 	 * @return string
 	 * @throws \HtmlException
 	 */
-    public function shortenUrl($url)
+    public static function shortenUrl($url)
     {
 
-	    $data = $this->fetchTinyUrl($url);
+	    $data = self::fetchTinyUrl($url);
 	    if ($data)
-	        return $this->a($data, $data, false, array('target' => '_blank'));
+	        return self::a($data, $data, false, array('target' => '_blank'));
 
 	    throw new \HtmlException("Wrong get a tinyUrl" . print_r($data));
     }
@@ -254,7 +286,7 @@ class HtmlHelper
 	 *
 	 * @return mixed
 	 */
-    public function fetchTinyUrl($url)
+    public static function fetchTinyUrl($url)
     {
         $ch = curl_init();
         $timeout = 5;
@@ -272,11 +304,11 @@ class HtmlHelper
      * @param bool $base_path
      * @return null|string
      */
-    public function url($path, $base_path = true)
+    public static function url($path, $base_path = true)
     {
         $url = null;
         if($base_path)
-            $url .= trim($this->getBaseSite(), '/') . '/';
+            $url .= self::getBaseSite();
         $url .= $path;
 
         return $url;

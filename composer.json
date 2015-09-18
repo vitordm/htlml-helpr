@@ -1,9 +1,9 @@
 {
   "name": "html/html-helpr",
   "description": "Helper to create and manipulate HTML with PHP >= 5.3",
-  "minimum-stability": "dev",
-  "license": "proprietary",
-  "version": "0.2",
+  "minimum-stability": "alpha",
+  "license": "MIT",
+  "version": "1.0.0",
   "authors": [
     {
       "name": "Vítor G. I. Oliveira",

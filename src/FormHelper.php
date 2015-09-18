@@ -2,6 +2,12 @@
 
 namespace Html;
 
+/**
+ * Class FormHelper
+ * @version 1.0.0
+ * @package Html
+ * @author Vitor Oliveira <oliveira.vitor3@gmail.com>
+ */
 class FormHelper extends HtmlHelper
 {
 	/**
@@ -15,7 +21,7 @@ class FormHelper extends HtmlHelper
 	 * @return null|string
 	 * @throws HtmlException
 	 */
-    public function open($name = NULL,
+    public static function open($name = NULL,
                          $class = NULL,
                          $id = NULL,
                          $method = 'POST',
@@ -33,7 +39,7 @@ class FormHelper extends HtmlHelper
         $attrs['action'] = $action;
         
         $tag .= '<form';
-        $tag .= ' ' . $this->parseAttrs($attrs);
+        $tag .= ' ' . self::parseAttrs($attrs);
         $tag .= '>';
         return $tag;
     }
@@ -41,7 +47,7 @@ class FormHelper extends HtmlHelper
     /**
      * @return string "</form>"
      */
-    public function close()
+    public static function close()
     {
         return "</form>";
     }
@@ -58,7 +64,7 @@ class FormHelper extends HtmlHelper
 	 *
 	 * @return null|string
 	 */
-    public function select($name,
+    public static function select($name,
                            $class,
                            $id,
                            array $options,
@@ -79,16 +85,16 @@ class FormHelper extends HtmlHelper
             if(($opt_value) && $value == $opt_value)
                 $opt_attr['selected'] = 'selected';
             
-            $opts[] = $this->tag('option', $msg, NULL, NULL, $opt_attr);
+            $opts[] = self::tag('option', $msg, NULL, NULL, $opt_attr);
             
         }
         
-        $opts = $this->parseBreak(implode(PHP_EOL, $opts));
+        $opts = self::parseBreak(implode(PHP_EOL, $opts));
         $ret = NULL;
         if($label)
-            $ret = PHP_EOL . $this->formatLabel($label, $id);
+            $ret = PHP_EOL . self::formatLabel($label, $id);
             
-        $ret .= $this->parseBreak($this->tag('select', $opts, $class, $id, $attrs));
+        $ret .= self::parseBreak(self::tag('select', $opts, $class, $id, $attrs));
         return $ret;
     }
 
@@ -102,7 +108,7 @@ class FormHelper extends HtmlHelper
 	 *
 	 * @return null|string
 	 */
-	public function textarea($name,
+	public static function textarea($name,
                              $class = NULL,
                              $id = NULL,
                              $value = NULL,
@@ -111,11 +117,11 @@ class FormHelper extends HtmlHelper
     {
         $ret = NULL;
         if($label)
-            $ret .= PHP_EOL . $this->formatLabel($label, $id);
+            $ret .= PHP_EOL . self::formatLabel($label, $id);
         if(!$value)
             $value = '';
         $attrs['name'] = $name;
-        $ret .= $this->tag('textarea',$value, $class, $id, $attrs);
+        $ret .= self::tag('textarea',$value, $class, $id, $attrs);
         
         return $ret;
         
@@ -133,7 +139,7 @@ class FormHelper extends HtmlHelper
 	 *
 	 * @return null|string
 	 */
-    public function input(
+    public static function input(
                         $type = 'text',
                         $name = '',
                         $class = '',
@@ -148,14 +154,14 @@ class FormHelper extends HtmlHelper
         
         $ret = NULL;
         if($label)
-            $ret .= PHP_EOL . $this->formatLabel($label, $id);
+            $ret .= PHP_EOL . self::formatLabel($label, $id);
         
         if($value)
             $attrs['value'] = $value;
         
         $attrs['name'] = $name;
         
-        $ret .= $this->tag('input', NULL, $class, $id, $attrs);
+        $ret .= self::tag('input', NULL, $class, $id, $attrs);
         return $ret;
     }
 
@@ -168,7 +174,7 @@ class FormHelper extends HtmlHelper
 	 *
 	 * @return null|string
 	 */
-    public function button(
+    public static function button(
         $name = NULL,
         $class = NULL,
         $id = NULL,
@@ -181,7 +187,7 @@ class FormHelper extends HtmlHelper
            if($name)
             $attrs['name'] = $name;
         
-        $ret .= $this->tag('button', $text, $class, $id, $attrs);
+        $ret .= self::tag('button', $text, $class, $id, $attrs);
         return $ret;
     }
     
@@ -192,7 +198,7 @@ class FormHelper extends HtmlHelper
     {
         if($id)
             $attrs['for'] = $id;
-        $ret = $this->tag('label', $label, NULL, NULL, $attrs);
+        $ret = self::tag('label', $label, NULL, NULL, $attrs);
         return $ret;
     }
 }
