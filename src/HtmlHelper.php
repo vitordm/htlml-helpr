@@ -24,7 +24,7 @@ class HtmlHelper
      */
     public static function getBaseSite()
     {
-        return rtrim(self::BASE_SITE, "/") . "/";
+        return rtrim(self::$BASE_SITE, "/") . "/";
     }
     
     /**
