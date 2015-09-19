@@ -350,7 +350,7 @@ class HtmlHelper
         //Creating head table
         $tr_heads = null;
 
-        if (!isset($head[0])) {
+        if (!is_array($head[0])) {
             $head = array($head);
         }
 
@@ -367,10 +367,16 @@ class HtmlHelper
                 }
                 unset($h['tr']);
             }
+            
+            $class = false;
+			if (isset($tr_head_attr['class'])) {
+				$class = $tr_head_attr['class'];
+				unset($tr_head_attr['class']);
+			}
 
             $td_h = self::parseFetchTdTable($h, 'th');
 
-            $th_row = self::tag($tr_head_tag, $td_h, null, null, $tr_head_attr);
+            $th_row = self::tag($tr_head_tag, $td_h, $class, null, $tr_head_attr);
             $tr_heads .= $th_row;
         }
 
@@ -396,9 +402,15 @@ class HtmlHelper
                 }
                 unset($b['tr']);
             }
+            
+            $class = false;
+			if (isset($tr_body_attr['class'])) {
+				$class = $tr_body_attr['class'];
+				unset($tr_body_attr['class']);
+			}
 
             $td_b = self::parseFetchTdTable($b);
-            $tb_row = self::tag($tr_body_tag, $td_b, null, null, $tr_body_attr);
+            $tb_row = self::tag($tr_body_tag, $td_b, $class, null, $tr_body_attr);
             $tr_bodys .= $tb_row;
         }
 
@@ -406,6 +418,10 @@ class HtmlHelper
 
         //Creating footer of table
         if (!empty($footer)) {
+            
+            if (!is_array($footer[0])) {
+				$footer = array($footer);
+			}
 
             $tr_footer = null;
             foreach ($footer as $f) {
@@ -421,9 +437,15 @@ class HtmlHelper
                     }
                     unset($b['tr']);
                 }
+                
+                $class = false;
+				if (isset($tr_footer_attr['class'])) {
+					$class = $tr_footer_attr['class'];
+					unset($tr_footer_attr['class']);
+				}
 
                 $td_f = self::parseFetchTdTable($b);
-                $tf_row = self::tag($tr_footer_tag, $td_f, null, null, $tr_footer_attr);
+                $tf_row = self::tag($tr_footer_tag, $td_f, $class, null, $tr_footer_attr);
                 $tr_footer .= $tf_row;
             }
 
@@ -448,7 +470,6 @@ class HtmlHelper
      */
     private static function parseFetchTdTable($fields, $tag = 'td')
     {
-
 
         $td_fetch = null;
         foreach ($fields as $h) {
