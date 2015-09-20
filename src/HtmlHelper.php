@@ -134,6 +134,11 @@ class HtmlHelper
         $ret = NULL;
         foreach($args as $a)
         {
+            $class = "";
+            $id = "";
+            $type = "";
+            $text = "";
+            
             if(isset($a['class']))
                 $class = $a['class'];
             if(isset($a['id']))
