@@ -63,7 +63,7 @@ class HtmlHelper
      * @param $link
      * @return string
      */
-    public static function getCSSLink($link)
+    public static function getCSSLink()
     {
         return rtrim(self::$CSS_LINK, "/") . "/";
     }
