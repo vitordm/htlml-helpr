@@ -138,7 +138,7 @@ class BootstrapHelper extends HtmlHelper
      *
      * @return string
      */
-    public function icon($icon, $type = self::FONT_AWESOME)
+    public static function icon($icon, $type = self::FONT_AWESOME)
     {
         $class = null;
 
