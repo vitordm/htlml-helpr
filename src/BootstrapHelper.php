@@ -147,7 +147,7 @@ class BootstrapHelper extends HtmlHelper
 
         }
         else if ($type === self::FONT_BOOTSTRAP) {
-            $class = 'glyphicon-' . $icon;
+            $class = 'glyphicon glyphicon-' . $icon;
         }
         else {
             $class = $icon;
