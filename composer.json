@@ -1,5 +1,5 @@
 {
-  "name": "html/html-helpr",
+  "name": "vtr/html-helpr",
   "description": "Helper to create and manipulate HTML with PHP >= 5.3",
   "minimum-stability": "alpha",
   "license": "MIT",
