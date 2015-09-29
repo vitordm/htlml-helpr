@@ -3,7 +3,6 @@
   "description": "Helper to create and manipulate HTML with PHP >= 5.3",
   "type" : "library",
   "license": "MIT",
-  "version": "1.0.0",
   "authors": [
     {
       "name": "Vítor G. I. Oliveira",
