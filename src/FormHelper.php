@@ -58,7 +58,6 @@ class FormHelper extends HtmlHelper
 	 * @param       $id
 	 * @param array $options
 	 * @param null  $opt_value
-	 * @param null  $opt_group
 	 * @param null  $label
 	 * @param array $attrs
 	 *
